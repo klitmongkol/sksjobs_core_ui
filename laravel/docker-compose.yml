@@ -9,27 +9,11 @@ services:
     working_dir: /var/www
     ports:
       - "8000:8000"
-    depends_on:
-      - db
     environment:
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: sksjob_company
-      DB_USERNAME: sksjob_company
-      DB_PASSWORD: JPHFLEZ8xAbN3Emw
-
-  db:
-    image: mysql:8.0
-    container_name: mysql-db
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: sksjob_company
-      MYSQL_USER: sksjob_company
-      MYSQL_PASSWORD: JPHFLEZ8xAbN3Emw
-    volumes:
-      - mysql_data:/var/lib/mysql
-
-volumes:
-  mysql_data:
+      # ใช้ Environment Variables จากไฟล์ .env โดยตรง
+      - DB_CONNECTION=${DB_CONNECTION}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
