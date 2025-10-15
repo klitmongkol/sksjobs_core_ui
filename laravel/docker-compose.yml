@@ -6,9 +6,11 @@ services:
     container_name: laravel-app
     volumes:
       - .:/var/www
+      - /var/www/node_modules
     working_dir: /var/www
     ports:
       - "8000:8000"
+      - "5173:5173"
     environment:
       # ใช้ Environment Variables จากไฟล์ .env โดยตรง
       - DB_CONNECTION=${DB_CONNECTION}

@@ -10,6 +10,24 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Employee;
 
 class LineController extends Controller{
+    public function profile(Request $request){
+        $validatedData = Validator::make($request->all(),[
+            'accessToken'=>'required',
+            'userId'=>'required',
+        ]);
+        $validated = $validatedData->validated();
+        if($validatedData->fails()){
+            return $this->sendError($validatedData->errors());
+        }
+        if($employee = Employee::where('employeeid',$validated['employeeId'])->where('password',$validated['password'])->first()){
+            if(Employee::where('id',$employee->id)->update([
+                'lineUserId' => $validated['lineUserId'],
+                'lineDisplayName' => $validated['lineDisplayName'],
+            ])){
+                return $this->sendResponse([],true,'ระบบได้ทำการผูกข้อมูลแก่พนักงาน '.$employee->name.' '.$employee->lastname.' เสร็จสิ้น ');
+            }else return $this->sendResponse([],false,'ระบบไม่พบข้อมูลพนักงาน กรุณาตรวจสอบอีกครั้ง');
+        } else return $this->sendResponse([],false,'ระบบไม่พบข้อมูลพนักงาน หรือรหัสลับไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง');
+    }
     public function merge(Request $request){
         $validatedData = Validator::make($request->all(),[
             'employeeId'=>'required',

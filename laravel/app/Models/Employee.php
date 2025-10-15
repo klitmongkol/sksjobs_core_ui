@@ -13,20 +13,25 @@ class Employee extends Model
     protected $fillable = [
         'employeeid',
         'gender',
+        'prefix',
         'name',
+        'firstname',
         'lastname',
         'bankcode',
-        'bankaccount',
+        'accountno',
         'startedwork',
         'section',
         'line',
         'plant',
-        'idcardnumber',
+        'serialno',
         'password',
         'email',
         'emailstatus',
         'location',
         'created_at',
         'updated_at',
+    ];
+    protected $hidden = [
+        'password',
     ];
 }

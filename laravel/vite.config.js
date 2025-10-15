@@ -5,15 +5,17 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/sass/app.scss', 'resources/js/app.js'],
+            input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
         }),
         vue(),
     ],
     server: {
-        host: '0.0.0.0',
+        host: '0.0.0.0', // listen ทุก interface
+        port: 5173,
         hmr: {
-            host: 'localhost',
+            host: '', // ปล่อยว่าง → Vite จะใช้ host ที่ browser เข้ามา
+            protocol: 'ws', // ใช้ WebSocket สำหรับ HMR
         },
     },
     resolve: {

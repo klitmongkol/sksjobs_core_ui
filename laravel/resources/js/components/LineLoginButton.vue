@@ -49,12 +49,15 @@ import { onMounted, ref } from 'vue'; // เพิ่ม onUnmounted
                 console.log('Logedin');
                 const accessToken = liff.getAccessToken();
                 if(accessToken){
-                    await getLineProfileFromBackend(accessToken);
                     profile.value  = await liff.getProfile();
                     if(profile.value.userId){
                         localStorage.setItem('userId',profile.value.userId);
                         localStorage.setItem('displayName',profile.value.displayName);
                         localStorage.setItem("profile", JSON.stringify(profile.value));
+                        await getLineProfileFromBackend({
+                            accessToken : accessToken,
+                            userId : profile.value.userId,
+                        });
                     } else {
                         alert("UserId are not fround, but logged in via liff.");
                     }
@@ -77,10 +80,13 @@ import { onMounted, ref } from 'vue'; // เพิ่ม onUnmounted
             alert("Line login failed: " + error.message);
         }
     };
-    const getLineProfileFromBackend = async (accessToken) => {
+    const getLineProfileFromBackend = async (parameter) => {
         try {
             // ตรวจสอบให้แน่ใจว่า URL นี้ถูกต้องสำหรับ Backend ของคุณ
-            const response = await axios.post('/line/get/profile', { access_token: accessToken });
+            const response = await axios.post('/line/get/profile', {
+                accessToken : parameter.accessToken,
+                userId :parameter.userId
+            });
             profile.value = response.data; // เก็บข้อมูลโปรไฟล์ที่ได้จาก Backend
             console.log('Profile from Backend:', profile.value);
         } catch (error) {

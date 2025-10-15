@@ -21,6 +21,14 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo pdo_mysql mbstring zip gd
 
+# 🌟🌟🌟 เพิ่มโค้ดแก้ไข PHP INI สำหรับ CLI/FPM เป็น 500M 🌟🌟🌟
+# การสร้างไฟล์ .ini ใน conf.d เป็นวิธีมาตรฐานที่ใช้งานได้ถาวร
+RUN echo "post_max_size = 500M" > /usr/local/etc/php/conf.d/custom-upload.ini \
+    && echo "upload_max_filesize = 500M" >> /usr/local/etc/php/conf.d/custom-upload.ini \
+    && echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/custom-upload.ini \
+    && echo "max_execution_time = 300" >> /usr/local/etc/php/conf.d/custom-upload.ini \
+    && echo "date.timezone = Asia/Bangkok" >> /usr/local/etc/php/conf.d/custom-upload.ini
+
 # ติดตั้ง Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -41,7 +49,4 @@ RUN chown -R www-data:www-data /var/www
 EXPOSE 8000
 
 # กำหนดคำสั่งที่จะรันอัตโนมัติเมื่อ Container เริ่มทำงาน
-# Dockerfile ที่ดีควรใช้คำสั่งที่ทำงานค้างอยู่ (persistent command)
-# แต่เนื่องจากคุณใช้ php artisan serve เป็นหลัก เราจะใช้มันเป็นตัวอย่าง
-# หมายเหตุ: สำหรับ Production อาจใช้ Nginx/Apache + php-fpm แทน
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
